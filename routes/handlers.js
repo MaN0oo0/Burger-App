@@ -10,6 +10,8 @@ router.get("/", (req, res) => {
         title: "Home",
         script: "main",
         burgers,
+        active: "active",
+        home: "true",
       });
     }
   });
@@ -25,6 +27,8 @@ router.get("/favorites", (req, res) => {
         title: "Favorites",
         favList: results,
         script: "main",
+        active: "active",
+        favorites: "true",
       });
     }
   });

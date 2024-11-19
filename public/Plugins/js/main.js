@@ -15,7 +15,7 @@ const burgerTemplet = (brgerName, id, isFav, Price) => {
   });
   PriceArea.html(`${Price} $`);
   const img = $("<img>").attr({
-    class: "card-img-top",
+    class: "card-img-top CoverStyle",
     src: `images/1.jpeg`,
     alt: "Card image cap",
     style: "width: 100%;height: 180px;",
