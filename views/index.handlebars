@@ -1,0 +1,12 @@
+<div class="row col-md-12 d-flex justify-content-end my-3">
+    <div class="col-md-3">
+        {{> add}}
+    </div>
+</div>
+
+<div class="row col-md-12 m-auto d-flex justify-content-center renderBurgers">
+    {{#each burgers}}
+
+    {{> burgerTemp . FavPage=false }}
+    {{/each}}
+</div>

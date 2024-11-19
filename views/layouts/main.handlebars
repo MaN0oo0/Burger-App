@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+            href="Plugins/css/bootstrap.css">
+        <link rel="stylesheet" href="Plugins/css/style.css">
+        {{#if style}}
+        <link rel="stylesheet" href="Plugins/css/{{style}}.css">
+        {{/if}}
+        <title>{{title}}</title>
+    </head>
+    <body>
+        {{> nav}}
+        {{{body}}}
+        <script
+            src="Plugins/js/jquery-3.6.0.js"></script>
+        <script
+            src="Plugins/js/bootstrap.bundle.js"></script>
+     {{> scripts}}
+    </body>
+</html>

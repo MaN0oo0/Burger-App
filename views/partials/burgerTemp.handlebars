@@ -1,0 +1,58 @@
+ <div class="col-md-3 my-2 mx-1" id="B_{{id}}">
+    <div class="card">
+        <img src="images/1.jpeg" class="card-img-top"
+            style="width: 100%;height: 180px;">
+        <div class="card-body">
+            <h5 class="card-title">Name: {{birger_name}}</h5>
+
+            <div class="d-flex justify-content-evenly align-items-center">
+                {{#if FavPage}}
+                <button onclick="updateFav(this)" id="favBtn_{{id}}"
+                    data-id="{{id}}"
+                    data-state="{{isFav}}"
+                    data-fav="true"
+                    class="btn btn-danger btn-sm">
+
+                    Remove from Fav
+                </button>
+                {{else}}
+                {{#if isFav}}
+                <span class="badge bg-secondary">Fav</span>
+                {{else}}
+                <button onclick="updateFav(this)" id="favBtn_{{id}}"
+                    data-id="{{id}}"
+                    data-state="{{isFav}}"
+                    class="btn btn-primary btn-sm">
+
+                    Add to Fav
+                </button>
+
+                {{/if}}
+                <button class="btn btn-danger btn-sm"
+                    data-name="{{birger_name}}" data-id="{{id}}"
+                    onclick="deleteBurger(this)">Delete</button>
+                {{/if}}
+            </div>
+
+            {{!-- <div class="d-flex justify-content-evenly align-items-center">
+
+                {{#if isFav}}
+                <span class="badge bg-secondary">Fav</span>
+                {{else}}
+                <button onclick="updateFav(this)" id="favBtn_{{id}}"
+                    data-id="{{id}}"
+                    data-state="{{isFav}}"
+                    class="btn btn-primary btn-sm">
+
+                    Add to Fav
+                </button>
+
+                {{/if}}
+                <button class="btn btn-danger btn-sm"
+                    data-name="{{birger_name}}" data-id="{{id}}"
+                    onclick="deleteBurger(this)">Delete</button>
+            </div> --}}
+
+        </div>
+    </div>
+</div>
