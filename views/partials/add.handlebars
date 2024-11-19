@@ -24,14 +24,24 @@
                         <input type="text" class="form-control" id="burgerName"
                             placeholder="Enter name" name="burger_name"
                             required />
-
+                        <span id="burgerName_error" class="text-danger"> </span>
                     </div>
-                    <span id="burgerName_error" class="text-danger"> </span>
+                    <div class="form-group">
+                        <label for="burgerName">Price:</label>
+                        <input type="number" min="5" max="100"
+                            class="form-control" id="Price"
+                            placeholder="Enter Price" name="Price"
+                            required />
+
+                        <span id="Price_error" class="text-danger"> </span>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="closeModel" class="btn btn-secondary"
+                    <button type="button" id="closeModel"
+                        class="btn btn-secondary"
                         data-bs-dismiss="modal">Close</button>
-                    <button type="submit" name="AddBurger" class="btn btn-primary">Save
+                    <button type="submit" name="AddBurger"
+                        class="btn btn-primary">Save
                         changes</button>
                 </div>
             </form>

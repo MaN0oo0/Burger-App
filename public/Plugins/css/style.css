@@ -1,3 +1,11 @@
 body{
     background-color: #333;
 }
+.PicArea{
+    position: relative;
+}
+.PricArea{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}

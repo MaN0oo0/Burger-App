@@ -12,8 +12,8 @@ const orm = {
   },
 
   insertOne: function (vals, cb) {
-    var query = `INSERT INTO resturent (birger_name,isFav) 
-    VALUES('${vals}',0);`;
+    var query = `INSERT INTO resturent (birger_name,isFav,Price) 
+    VALUES('${vals.birger_name}',0,${vals.Price});`;
     connection.run(query, function (err, data) {
       if (err) {
         return cb(err);

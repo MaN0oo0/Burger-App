@@ -31,8 +31,8 @@ router.get("/favorites", (req, res) => {
 });
 
 router.post("/add", (req, res) => {
-  const birgername = req.body.birger_name;
-  orm.insertOne(birgername, (err, burger) => {
+  const { birger_name, Price } = req.body;
+  orm.insertOne(req.body, (err, burger) => {
     if (err) {
       console.error(err);
       res.status(401);
@@ -46,8 +46,9 @@ router.post("/add", (req, res) => {
         message: "Burger added successfully",
         burger: {
           id: burger,
-          birger_name: birgername,
+          birger_name: birger_name,
           isFav: 0,
+          Price: Price,
         },
       });
     }

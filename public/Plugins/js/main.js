@@ -1,4 +1,4 @@
-const burgerTemplet = (brgerName, id, isFav) => {
+const burgerTemplet = (brgerName, id, isFav, Price) => {
   const burgerContainer = $("<div>").attr({
     class: "col-md-3 my-2 mx-1",
     id: `B_${id}`,
@@ -7,12 +7,21 @@ const burgerTemplet = (brgerName, id, isFav) => {
   const card = $("<div>").attr({
     class: "card",
   });
+  const PicArea = $("<div>").attr({
+    class: "PicArea",
+  });
+  const PriceArea = $("<span>").attr({
+    class: "badge bg-secondary p-2 PricArea",
+  });
+  PriceArea.html(`${Price} $`);
   const img = $("<img>").attr({
     class: "card-img-top",
     src: `images/1.jpeg`,
     alt: "Card image cap",
     style: "width: 100%;height: 180px;",
   });
+
+  PicArea.append(PriceArea, img);
   const cardBody = $("<div>").attr({
     class: "card-body",
   });
@@ -46,13 +55,18 @@ const burgerTemplet = (brgerName, id, isFav) => {
   btnsContainer.append(favBtn, deleteBtn);
   cardBody.append(cardTitle, btnsContainer);
 
-  card.append(img, cardBody);
+  card.append(PicArea, cardBody);
   burgerContainer.append(card);
   return burgerContainer;
 };
 
 const displayNewBurger = (burger) => {
-  const newBurger = burgerTemplet(burger.birger_name, burger.id, burger.isFav);
+  const newBurger = burgerTemplet(
+    burger.birger_name,
+    burger.id,
+    burger.isFav,
+    burger.Price
+  );
   $(".renderBurgers").prepend(newBurger);
 };
 
@@ -61,7 +75,7 @@ const displayOnDelete = (id, message) => {
   alert(message);
 };
 const displayOnUpdate = (id, favState, favPage) => {
-  if (!favPage && favPage === "false") {
+  if (!favPage) {
     if (favState === 1) {
       $(`#favBtn_${id}`).replaceWith(
         `<span class="badge bg-secondary">Fav</span>`
@@ -83,24 +97,45 @@ const displayOnError = (err) => {
   alert(err);
 };
 
+const validateInputs = (name, val) => {
+  if (name === "Price" && !val) {
+    return "Please enter a Price burger ";
+  }
+  if (name === "Price" && Number(val) > 100 || Number(val) <= 5) {
+    return "Price must be between 5 and 100 ";
+  }
+  if (name === "burger_name" && !val) {
+    return "Please enter a burger name";
+  }
+};
+
 $('button[name="AddBurger"]').on("click", (e) => {
   e.preventDefault();
-  var burgerName = $('[name="burger_name"]').val();
-  if (burgerName) {
-    $("#burgerName_error").text("");
-    $.post("/add", { birger_name: $('[name="burger_name"]').val() })
-      .then((data) => {
-        displayNewBurger(data.burger);
-        alert(data.message);
-        $('[name="burger_name"]').val("");
-        $("#closeModel").click();
-      })
-      .catch((error) => {
-        displayOnError(error.message);
-      });
+  var burgerName = $('[name="burger_name"]').val().trim();
+  var Price = $('[name="Price"]').val();
+  if (validateInputs("burger_name", burgerName)) {
+    $("#burgerName_error").text(validateInputs("burger_name", burgerName));
+    return;
   } else {
-    $("#burgerName_error").text("Please enter a burger name");
+    $("#burgerName_error").text("");
   }
+  if (validateInputs("Price", Price)) {
+    $("#Price_error").text(validateInputs("Price", Price));
+    return;
+  } else {
+    $("#Price_error").text("");
+  }
+  $("#burgerName_error").text("");
+  $.post("/add", { birger_name: burgerName, Price: Price })
+    .then((data) => {
+      displayNewBurger(data.burger);
+      alert(data.message);
+      $('[name="burger_name"]').val("");
+      $("#closeModel").click();
+    })
+    .catch((error) => {
+      displayOnError(error.message);
+    });
 });
 
 const deleteBurger = function (e) {
@@ -133,7 +168,6 @@ const updateFav = (e) => {
     },
     success: function (data) {
       displayOnUpdate($(e).data("id"), ChangFav, $(e).data("fav"));
-      return;
     },
     error: function (xhr, status, error) {
       displayOnError(xhr.responseJSON.message);
