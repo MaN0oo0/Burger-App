@@ -115,6 +115,12 @@ router.get(`/search`, (req, res) => {
         });
       }
     });
+  } else {
+    res.render("search", {
+      title: "Search Page",
+      SearchTerm: " ",
+      script: "main",
+    });
   }
 });
 
