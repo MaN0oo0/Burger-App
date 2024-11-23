@@ -18,12 +18,11 @@ router.get("/", (req, res) => {
           username: store.get("name"),
         });
       } else {
-        res.render("index", {
-          title: "Home",
-          script: "main",
-          burgers,
+        res.render("account", {
+          title: "Login",
+          script: "login",
           active: "active",
-          home: "true",
+          login: "true",
         });
       }
     }
@@ -48,11 +47,34 @@ router.get("/account", (req, res) => {
       login: "true",
     });
   } else if (query === "register") {
-    res.render("account", {
-      title: "Register",
-      script: "register",
+    orm.ormBurger.selectAll("resturent", (err, burgers) => {
+      if (err) {
+        console.log(err);
+      } else {
+        var ids = burgers.map((e) => {
+          return { name: e.birger_name, id: e.id };
+        });
+        res.render("account", {
+          title: "Register",
+          script: "register",
+          active: "active",
+          register: "true",
+          burgers:ids
+        });
+      }
+    });
+  }
+});
+
+router.get("/profile", (req, res) => {
+  if (store.get("token")) {
+    res.render("profile", {
+      title: "Profile",
+      script: "profile",
       active: "active",
-      register: "true",
+      profile: "true",
+      token: store.get("token"),
+      username: store.get("name"),
     });
   }
 });
@@ -188,7 +210,6 @@ router.get(`/search`, (req, res) => {
 //#endregion
 //=================Auth Apis =====================\\
 router.post("/login", (req, res) => {
-  const { email, password } = req.body;
   orm.ormUser.auth(req.body, (err, results) => {
     if (err) {
       console.error(err);
@@ -202,6 +223,18 @@ router.post("/login", (req, res) => {
       res.json({
         message: "Login successful",
         data: reslt,
+      });
+    }
+  });
+});
+
+router.post("/register", (req, res) => {
+  orm.ormUser.register(req.body, (err, results) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json({
+        message: "Register successful",
       });
     }
   });

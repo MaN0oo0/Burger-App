@@ -1,38 +1,42 @@
 <form class="text-white p-1">
-<h3>Sign Up</h3>
+    <h3>Sign Up</h3>
     <div class="mb-3">
         <label for="userName" class="form-label">User Name </label>
         <input type="text" class="form-control" id="userName"
-            aria-describedby="emailHelp">
-        <div id="userName_error" class="form-text">We'll never share your email
-            with
-            anyone else.</div>
+            onchange="InputOnChange(this)"
+            aria-describedby="emailHelp" name="username">
+        <div id="username_error" class="form-text text-danger"></div>
     </div>
     <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="email"
+        <input type="email" class="form-control" id="email" name="email"
+            onchange="InputOnChange(this)"
             aria-describedby="emailHelp">
-        <div id="email_error" class="form-text">We'll never share your email
-            with
-            anyone else.</div>
+        <div id="email_error" class="form-text text-danger"></div>
     </div>
 
     <div class="mb-3">
         <label for="password" class="form-label">Email address</label>
-        <input type="password" class="form-control" id="password"
+        <input type="password" class="form-control" name="password"
+            id="password"
+            onchange="InputOnChange(this)"
             aria-describedby="emailHelp">
-        <div id="password_error" class="form-text">We'll never share your email
-            with
-            anyone else.</div>
+        <div id="password_error" class="form-text text-danger"></div>
     </div>
     <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Password</label>
-        <select class="form-select">
-            <option value="option1">option1</option>
-            <option value="option2">option2</option>
-
+        <label for="favBurger" class="form-label">Fav Burger</label>
+        <select
+            onchange="InputOnChange(this)"
+            class="form-select" id="favBurger" name="resturent_id"
+            name="resturent_id">
+            <option value="">chose burger</option>
+            {{#each burgers}}
+            <option value="{{id}}">{{name}}</option>
+            {{/each}}
         </select>
+        <div id="resturent_id_error" class="form-text text-danger"></div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="button" onclick="OnSubmit(this)"
+        class="btn btn-primary">Submit</button>
 </form>

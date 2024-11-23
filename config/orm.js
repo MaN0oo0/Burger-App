@@ -83,6 +83,18 @@ const ormUser = {
       cb(null, CreateToken(vals.email.split("@")[0]));
     });
   },
+  register: function (vals, cb) {
+    const converPass = btoa(vals.password);
+    const query = `INSERT INTO users (username, email, password, resturent_id)
+    VALUES ('${vals.username}','${vals.email}','${converPass}',${vals.resturent_id})`;
+    connection.run(query, function (err, data) {
+      if (err) {
+        return cb(err);
+      }
+
+      cb(null, this.lastID); // Return the ID of the inserted row
+    });
+  },
 };
 
 const CreateToken = (name) => {

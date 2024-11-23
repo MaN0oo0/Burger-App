@@ -9,6 +9,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {{#if token}}
                 <li class="nav-item">
                     <a class="nav-link {{#if home}} {{active}}{{/if}}"
                         aria-current="page"
@@ -22,7 +23,7 @@
                     <a class="nav-link {{#if testredux}} {{active}}{{/if}}"
                         href="/testredux">testredux</a>
                 </li>
-
+                {{/if}}
                 {{!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#"
                         id="navbarDropdown" role="button"
@@ -53,11 +54,11 @@
 
                 {{#if token}}
                 <li class="nav-item">
-                    <a class="nav-link {{#if register}} {{active}}{{/if}}"
-                        href="/account?action=LogOut">{{{username}}}</a>
+                    <a class="nav-link {{#if profile}} {{active}}{{/if}}"
+                        href="/profile">{{{username}}}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{#if register}} {{active}}{{/if}}"
+                    <a class="nav-link"
                         href="/logout">LogOut</a>
                 </li>
 
