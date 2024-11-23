@@ -1,4 +1,4 @@
-_user = {};
+_user = undefined;
 const User = {
   txtemail: "",
   txtpassword: "",
@@ -20,33 +20,42 @@ const validtion = (name, val) => {
   } else {
     $(`#${name}_error`).html("");
   }
-
   return true;
 };
 
 let InputOnChange = (e) => {
   let { name, value } = e;
-  console.log(`Name: ${name} || Value: ${value}`);
-
-  // const email=$("[name='txtemail']").val().trim();
-  // const password=$("[name='txtpassword]'").val().trim();
   if (validtion(name, value)) {
-    _user = setUser(name, value);
+    _user = { ...setUser(name, value) };
   }
 };
 
 OnSubmit = function (e) {
-  if (!_user == {}) {
-    var newError = {
+  if (_user) {
+    var newErrorr = {
       txtemail: $("[name='txtemail']").val(),
       txtpassword: $("[name='txtpassword']").val(),
     };
-    for (const key in newError) {
-      if (validtion(key, newError[key])) {
-        _user[key] = newError[key];
-      }
+    if (
+      validtion("txtemail", newErrorr.txtemail) &&
+      validtion("txtpassword", newErrorr.txtpassword)
+    ) {
+      console.log("Goood", _user);
+
+      $.post("/login", { email: _user.txtemail, password: _user.txtpassword })
+        .then((res) => {
+          console.log(res.data);
+
+          location.href = "/";
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    } else {
+      _user["txtemail"] = newErrorr.txtemail;
+      _user["txtpassword"] = newErrorr.txtpassword;
+      console.log("Not Goood", _user);
     }
-    console.log(_user);
   } else {
     const email = $("[name='txtemail']").val();
     const password = $("[name='txtpassword']").val();

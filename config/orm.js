@@ -66,13 +66,21 @@ const ormBurger = {
 const ormUser = {
   auth: function (vals, cb) {
     const converPass = btoa(vals.password);
-    var query = `SELECT (username,email)  FROM users WHERE email=${vals.email} and password = ${converPass};`;
-    connection.all(query, [], function (err, results) {
+    const query = `SELECT username, email FROM users WHERE email = ? AND password = ?`;
+
+    // Use parameterized query to prevent SQL injection
+    connection.all(query, [vals.email, converPass], function (err, results) {
       if (err) {
         return cb(err);
       }
-      CreateToken(vals.email.split("@")[0])
-       cb(null, results);
+
+      // Check if any user was found
+      if (results.length === 0) {
+        return cb(new Error("Invalid email or password"));
+      }
+
+      // If a user is found, create and return the token
+      cb(null, CreateToken(vals.email.split("@")[0]));
     });
   },
 };
@@ -82,11 +90,10 @@ const CreateToken = (name) => {
   var newDateObj = new Date();
   newDateObj.setTime(oldDateObj.getTime() + 30 * 60 * 1000);
   console.log(newDateObj);
-  dateExpire.set;
   let content = "";
   name = name.split("").reverse();
   function randomNumber(min, max) {
-    return Math.random() * (max - min) + min;
+    return Math.floor(Math.random() * (max - min) + min);
   }
   for (let index = 0; index < name.length; index++) {
     const e = name[index];
@@ -95,7 +102,7 @@ const CreateToken = (name) => {
   }
 
   var Obj = {
-    userName: name,
+    userName: name.reverse().join(""),
     expireDate: newDateObj,
     token: content,
   };
@@ -103,4 +110,4 @@ const CreateToken = (name) => {
   return JSON.stringify(Obj);
 };
 
-module.exports = { ormBurger };
+module.exports = { ormBurger, ormUser };

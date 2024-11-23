@@ -1,13 +1,15 @@
 <div class="row col-md-12 d-flex justify-content-end my-3">
+    {{#if token}}
+
     <div class="col-md-3">
         {{> add}}
     </div>
+    {{/if}}
 </div>
 
 <div class="row col-md-12 m-auto d-flex justify-content-center renderBurgers">
-   
-   
-   {{#if burgers}}
+
+    {{#if burgers}}
     {{#each burgers}}
 
     {{> burgerTemp . FavPage=false }}
@@ -16,7 +18,7 @@
     {{else}}
     <div class="col-md-12 text-center text-white-50">
 
-        No Data 
+        No Data
     </div>
     {{/if}}
 </div>
