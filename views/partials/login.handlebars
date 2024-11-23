@@ -1,0 +1,23 @@
+<form class="text-white p-1"  >
+    <h3>Login</h3>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" onchange="InputOnChange(this)"
+            id="email" name="txtemail"
+            aria-describedby="emailHelp" value>
+        <div id="txtemail_error" class="form-text text-danger"></div>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" onchange="InputOnChange(this)"
+            class="form-control" id="password"
+            name="txtpassword" value>
+        <div id="txtpassword_error" class="form-text text-danger"></div>
+    </div>
+
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+    <button  onclick="OnSubmit(this)" type="button" class="btn btn-primary">Submit</button>
+</form>

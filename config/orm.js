@@ -1,6 +1,6 @@
 const connection = require("./db");
 
-const orm = {
+const ormBurger = {
   selectAll: function (tableInput, cb) {
     var query = `SELECT * FROM ${tableInput}`;
     connection.all(query, [], function (err, results) {
@@ -50,7 +50,6 @@ const orm = {
       if (err) {
         return cb(err);
       }
-      console.log(results);
 
       cb(null, results); // Return results through the callback
     });
@@ -64,5 +63,44 @@ const orm = {
     });
   },
 };
+const ormUser = {
+  auth: function (vals, cb) {
+    const converPass = btoa(vals.password);
+    var query = `SELECT (username,email)  FROM users WHERE email=${vals.email} and password = ${converPass};`;
+    connection.all(query, [], function (err, results) {
+      if (err) {
+        return cb(err);
+      }
+      CreateToken(vals.email.split("@")[0])
+       cb(null, results);
+    });
+  },
+};
 
-module.exports = orm;
+const CreateToken = (name) => {
+  var oldDateObj = new Date();
+  var newDateObj = new Date();
+  newDateObj.setTime(oldDateObj.getTime() + 30 * 60 * 1000);
+  console.log(newDateObj);
+  dateExpire.set;
+  let content = "";
+  name = name.split("").reverse();
+  function randomNumber(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  for (let index = 0; index < name.length; index++) {
+    const e = name[index];
+    const token = randomNumber(100000, 999999);
+    content += `${e}-${token}`;
+  }
+
+  var Obj = {
+    userName: name,
+    expireDate: newDateObj,
+    token: content,
+  };
+
+  return JSON.stringify(Obj);
+};
+
+module.exports = { ormBurger };

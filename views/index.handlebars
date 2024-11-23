@@ -5,8 +5,18 @@
 </div>
 
 <div class="row col-md-12 m-auto d-flex justify-content-center renderBurgers">
+   
+   
+   {{#if burgers}}
     {{#each burgers}}
 
     {{> burgerTemp . FavPage=false }}
     {{/each}}
+
+    {{else}}
+    <div class="col-md-12 text-center text-white-50">
+
+        No Data 
+    </div>
+    {{/if}}
 </div>

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const orm = require("../config/orm");
 router.get("/", (req, res) => {
-  orm.selectAll("resturent", (err, burgers) => {
+  orm.ormBurger.selectAll("resturent", (err, burgers) => {
     if (err) {
       console.error(err);
     } else {
@@ -17,8 +17,27 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/account", (req, res) => {
+  var query = req.query.action;
+  if (query === "login") {
+    res.render("account", {
+      title: "Login",
+      script: "login",
+      active: "active",
+      login: "true",
+    });
+  } else if (query === "register") {
+    res.render("account", {
+      title: "Register",
+      script: "register",
+      active: "active",
+      register: "true",
+    });
+  }
+});
+
 router.get("/favorites", (req, res) => {
-  orm.getAllFav("1", (err, results) => {
+  orm.ormBurger.getAllFav("1", (err, results) => {
     if (err) {
       console.error(err);
     } else {
@@ -36,7 +55,7 @@ router.get("/favorites", (req, res) => {
 
 router.post("/add", (req, res) => {
   const { birger_name, Price } = req.body;
-  orm.insertOne(req.body, (err, burger) => {
+  orm.ormBurger.insertOne(req.body, (err, burger) => {
     if (err) {
       console.error(err);
       res.status(401);
@@ -61,7 +80,7 @@ router.post("/add", (req, res) => {
 
 router.delete("/delete", (req, res) => {
   const id = req.body.id;
-  orm.deleteOne(id, (err, results) => {
+  orm.ormBurger.deleteOne(id, (err, results) => {
     if (err) {
       console.error(err);
       res.status(401);
@@ -80,7 +99,7 @@ router.delete("/delete", (req, res) => {
 router.put("/UpdateFav", (req, res) => {
   const { id, isFav } = req.body;
 
-  orm.updateOne(isFav, id, (err, results) => {
+  orm.ormBurger.updateOne(isFav, id, (err, results) => {
     if (err) {
       console.error(err);
       res.status(401);
@@ -99,7 +118,7 @@ router.put("/UpdateFav", (req, res) => {
 router.get(`/search`, (req, res) => {
   const search = req.query.searchTerm;
   if (search) {
-    orm.getAllBy(search, (err, results) => {
+    orm.ormBurger.getAllBy(search, (err, results) => {
       if (err) {
         console.error(err);
         res.render("search", {
