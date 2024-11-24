@@ -7,11 +7,21 @@ const path = require("path");
 const fileURLToPath = require("url");
 const PORT = process.env.PORT || 9001;
 const app = express();
+const session = require("express-session");
+
 // const __filename = fileURLToPath();
 // const __dirname = path.dirname(__filename);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
 app.use(bodyParser.json());
+app.use(
+  session({
+    secret: "my-secret-key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
 app.use(methodOverride("_method"));
 
 app.engine(
@@ -20,12 +30,12 @@ app.engine(
     defaultLayout: "main",
     layoutsDir: path.join(__dirname, "views/layouts"),
     partialsDir: path.join(__dirname, "views/partials"),
-    
   })
 );
 app.set("view engine", "handlebars");
 
 app.use("/", routes);
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

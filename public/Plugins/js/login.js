@@ -44,12 +44,10 @@ OnSubmit = function (e) {
 
       $.post("/login", { email: _user.txtemail, password: _user.txtpassword })
         .then((res) => {
-          console.log(res.data);
-
-          location.href = "/";
+          location.href = '/';
         })
         .catch((error) => {
-          console.log(error.message);
+          $("#response_request").html(error.responseJSON.message);
         });
     } else {
       _user["txtemail"] = newErrorr.txtemail;

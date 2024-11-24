@@ -3,7 +3,6 @@ const User = {
   username: "",
   email: "",
   password: "",
-  resturent_id: "",
 };
 let setUser = (name, val) => {
   User[name] = val;
@@ -28,12 +27,6 @@ const validtion = (name, val) => {
   } else {
     $(`#${name}_error`).html("");
   }
-  if (name === "resturent_id" && val == "") {
-    $(`#${name}_error`).html(`${name} is required !`);
-    return false;
-  } else {
-    $(`#${name}_error`).html("");
-  }
 
   return true;
 };
@@ -50,16 +43,13 @@ OnSubmit = function (e) {
       txtemail: $("[name='email']").val(),
       txtpassword: $("[name='password']").val(),
       txtusername: $("[name='username']").val(),
-      txtresturent_id: $("[name='resturent_id']").val(),
     };
     if (
       validtion("email", newErrorr.txtemail) &&
       validtion("password", newErrorr.txtpassword) &&
-      validtion("resturent_id", newErrorr.txtresturent_id) &&
       validtion("username", newErrorr.txtusername)
     ) {
       console.log("Goood", _user);
-
       $.post("/register", _user)
         .then((res) => {
           console.log(res.data);
@@ -72,7 +62,7 @@ OnSubmit = function (e) {
       _user["email"] = newErrorr.txtemail;
       _user["password"] = newErrorr.txtpassword;
       _user["username"] = newErrorr.txtusername;
-      _user["resturent_id"] = newErrorr.txtresturent_id;
+
       console.log("Not Goood", _user);
     }
   } else {
@@ -82,7 +72,6 @@ OnSubmit = function (e) {
       email: $("[name='email']").val(),
       password: $("[name='password']").val(),
       username: $("[name='username']").val(),
-      resturent_id: $("[name='resturent_id']").val(),
     };
     for (const key in newErrorr) {
       const element = newErrorr[key];

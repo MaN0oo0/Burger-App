@@ -1,4 +1,5 @@
- <div class="col-md-3 my-2 mx-1" id="B_{{id}}">
+ <div class="col-md-3 my-2 mx-1"
+    id="{{#if FavPage}} B_{{BurgerID}} {{else}} B_{{id}}{{/if}}">
     <div class="card">
         <div class="PicArea">
             <span class="badge bg-secondary p-2 PricArea">{{lookup . "Price"}}
@@ -10,8 +11,8 @@
 
             <div class="d-flex justify-content-evenly align-items-center">
                 {{#if FavPage}}
-                <button onclick="updateFav(this)" id="favBtn_{{id}}"
-                    data-id="{{id}}"
+                <button onclick="updateFav(this)" id="favBtn_{{BurgerID}}"
+                    data-id="{{BurgerID}}"
                     data-state="{{isFav}}"
                     data-fav="true"
                     class="btn btn-danger btn-sm">
@@ -19,42 +20,20 @@
                     Remove from Fav
                 </button>
                 {{else}}
-                {{#if isFav}}
-                <span class="badge bg-secondary">Fav</span>
-                {{else}}
+
                 <button onclick="updateFav(this)" id="favBtn_{{id}}"
                     data-id="{{id}}"
-                    data-state="{{isFav}}"
+                    data-state="0"
                     class="btn btn-primary btn-sm">
 
                     Add to Fav
                 </button>
 
-                {{/if}}
                 <button class="btn btn-danger btn-sm"
                     data-name="{{birger_name}}" data-id="{{id}}"
                     onclick="deleteBurger(this)">Delete</button>
                 {{/if}}
             </div>
-
-            {{!-- <div class="d-flex justify-content-evenly align-items-center">
-
-                {{#if isFav}}
-                <span class="badge bg-secondary">Fav</span>
-                {{else}}
-                <button onclick="updateFav(this)" id="favBtn_{{id}}"
-                    data-id="{{id}}"
-                    data-state="{{isFav}}"
-                    class="btn btn-primary btn-sm">
-
-                    Add to Fav
-                </button>
-
-                {{/if}}
-                <button class="btn btn-danger btn-sm"
-                    data-name="{{birger_name}}" data-id="{{id}}"
-                    onclick="deleteBurger(this)">Delete</button>
-            </div> --}}
 
         </div>
     </div>

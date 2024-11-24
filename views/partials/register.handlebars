@@ -23,19 +23,6 @@
             aria-describedby="emailHelp">
         <div id="password_error" class="form-text text-danger"></div>
     </div>
-    <div class="mb-3">
-        <label for="favBurger" class="form-label">Fav Burger</label>
-        <select
-            onchange="InputOnChange(this)"
-            class="form-select" id="favBurger" name="resturent_id"
-            name="resturent_id">
-            <option value="">chose burger</option>
-            {{#each burgers}}
-            <option value="{{id}}">{{name}}</option>
-            {{/each}}
-        </select>
-        <div id="resturent_id_error" class="form-text text-danger"></div>
-    </div>
 
     <button type="button" onclick="OnSubmit(this)"
         class="btn btn-primary">Submit</button>
