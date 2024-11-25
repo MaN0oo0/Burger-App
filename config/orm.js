@@ -5,7 +5,7 @@ const ormBurger = {
     var query = `SELECT * FROM ${tableInput}`;
     connection.all(query, [], function (err, results) {
       if (err) {
-        return cb(err);
+        return cb(new Error("Internal Error Occured"));
       }
       cb(null, results); // Return results through the callback
     });
@@ -15,51 +15,85 @@ const ormBurger = {
     var query = `INSERT INTO resturent (birger_name,Price) 
     VALUES('${vals.birger_name}',${vals.Price});
     
-    
-    
     `;
     connection.run(query, function (err, data) {
       if (err) {
-        return cb(err);
+        return cb(new Error("Internal Error Occured"));
       }
-      var query2 = `
-INSERT INTO UserFavorites (UserID, BurgerID, IsFav) 
-VALUES ('${vals.userId}', ${this.lastID}, 0);
-`;
+
       cb(null, this.lastID); // Return the ID of the inserted row
-      connection.run(query2, function (er, da) {});
     });
   },
 
   updateOne: function (vals, cb) {
-    var query = `
-    UPDATE UserFavorites
- SET IsFav = ${vals.IsFav}
- WHERE UserID = ${vals.UserID} AND BurgerID = ${vals.BurgerID}; 
+    var CheckExistFrst = `
+    SELECT * FROM UserFavorites WHERE UserID = ? AND BurgerID = ?;
     `;
-
-    connection.run(query, function (err) {
-      if (err) {
-        return cb(err);
+    connection.all(
+      CheckExistFrst,
+      [vals.UserID, vals.BurgerID],
+      (err, data) => {
+        if (err) {
+          return cb(new Error("Internal Error Occurred CheckExistFrst"));
+        } else {
+          if (data.length > 0) {
+            // Check if any records exist
+            var queryUpdate = `
+                UPDATE UserFavorites
+                SET IsFav = ?
+                WHERE UserID = ? AND BurgerID = ?; 
+                `;
+            connection.run(
+              queryUpdate,
+              [vals.IsFav, vals.UserID, vals.BurgerID],
+              function (err) {
+                if (err) {
+                  return cb(new Error("Internal Error Occurred queryUpdate"));
+                }
+                cb(null, vals.BurgerID); // Return the number of changed rows
+              }
+            );
+          } else {
+            var queryInsert = `
+                INSERT INTO UserFavorites (UserID, BurgerID, IsFav) 
+                VALUES (?, ?, ?);
+                `;
+            connection.run(
+              queryInsert,
+              [vals.UserID, vals.BurgerID, vals.IsFav],
+              function (err) {
+                if (err) {
+                  return cb(new Error("Internal Error Occurred queryInsert"));
+                }
+                cb(null, vals.BurgerID); // Return the number of changed rows
+              }
+            );
+          }
+        }
       }
-      cb(null, this.changes); // Return the number of changed rows
-    });
+    );
   },
-
-  deleteOne: function (condition, cb) {
-    var query = `DELETE FROM resturent WHERE id=${condition}`;
-    connection.run(query, function (err) {
+  deleteOne: function (condition, userId, cb) {
+    var query1 = `DELETE FROM resturent WHERE id=${condition}`;
+    connection.run(query1, function (err) {
       if (err) {
-        return cb(err);
+        return cb(new Error("Internal Error Occured query1"));
+      } else {
+        var query2 = `DELETE FROM UserFavorites WHERE UserID=${userId} AND BurgerID=${condition}`;
+        connection.run(query2, function (err) {
+          if (err) {
+            return cb(new Error("Internal Error Occured query2"));
+          }
+          cb(null, this.changes);
+        });
       }
-      cb(null, this.changes); // Return the number of deleted rows
     });
   },
   getAllBy: function (condition, cb) {
     var query = `SELECT * FROM resturent WHERE birger_name LIKE '%${condition}%'`;
     connection.all(query, [], function (err, results) {
       if (err) {
-        return cb(err);
+        return cb(new Error("Internal Error Occured"));
       }
 
       cb(null, results); // Return results through the callback
@@ -73,6 +107,18 @@ VALUES ('${vals.userId}', ${this.lastID}, 0);
       } else cb(null, results); // Return results through the callback
     });
   },
+
+  getAllFavIds: function (condition, userId, cb) {
+    // var query = `SELECT COUNT(*) as count FROM UserFavorites WHERE isFav =${condition}`;
+    var query = `SELECT BurgerID  FROM UserFavorites WHERE isFav =${condition} AND UserID=${userId}`;
+    connection.all(query, [], function (err, results) {
+      if (err) {
+        return cb(err);
+      }
+
+      cb(null, results);
+    });
+  },
 };
 const ormUser = {
   auth: function (vals, cb) {
@@ -80,18 +126,18 @@ const ormUser = {
     const query = `SELECT username, email ,id FROM users WHERE email = ? AND password = ?`;
 
     // Use parameterized query to prevent SQL injection
-    connection.all(query, [vals.email, converPass], function (err, results) {
+    connection.get(query, [vals.email, converPass], function (err, results) {
       if (err) {
-        return cb(err);
+        return cb(new Error("Internal Error Occured"));
       }
 
-      // Check if any user was found
-      if (results.length === 0) {
+      // // Check if any user was found
+      if (!results) {
         return cb(new Error("Invalid email or password"));
       }
 
       // If a user is found, create and return the token
-      cb(null, CreateToken(vals.email.split("@")[0], results[0].id));
+      cb(null, CreateToken(results.username, results.id));
     });
   },
   register: function (vals, cb) {
@@ -100,7 +146,7 @@ const ormUser = {
     VALUES ('${vals.username}','${vals.email}','${converPass}')`;
     connection.run(query, function (err, data) {
       if (err) {
-        return cb(err);
+        return cb(new Error("Internal Error Occured"));
       }
 
       cb(null, this.lastID); // Return the ID of the inserted row
@@ -112,7 +158,8 @@ const ormUser = {
         U.username,
         B.birger_name,
         UF.BurgerID,
-        UF.IsFav
+        UF.IsFav,
+        B.Price
     FROM 
         users U
     JOIN 
@@ -136,6 +183,8 @@ const CreateToken = (name, id) => {
 
   var oldDateObj = new Date();
   var newDateObj = new Date();
+  console.log("old", oldDateObj);
+
   newDateObj.setTime(oldDateObj.getTime() + 30 * 60 * 1000);
   console.log(newDateObj);
   let content = "";

@@ -1,6 +1,7 @@
  <div class="col-md-3 my-2 mx-1"
-    id="{{#if FavPage}} B_{{BurgerID}} {{else}} B_{{id}}{{/if}}">
+    id="{{#if FavPage}}B_{{{BurgerID}}}{{else}}B_{{id}}{{/if}}">
     <div class="card">
+
         <div class="PicArea">
             <span class="badge bg-secondary p-2 PricArea">{{lookup . "Price"}}
                 $</span>
@@ -19,9 +20,14 @@
 
                     Remove from Fav
                 </button>
-                {{else}}
 
-                <button onclick="updateFav(this)" id="favBtn_{{id}}"
+                {{else}}
+                {{#if isFav}}
+                <span class="badge bg-secondary">Fav</span>
+                {{/if}}
+
+                <button onclick="updateFav(this)"
+                    id="favBtn_{{id}}"
                     data-id="{{id}}"
                     data-state="0"
                     class="btn btn-primary btn-sm">

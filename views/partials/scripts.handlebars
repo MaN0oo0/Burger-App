@@ -1,3 +1,12 @@
-{{#if script}}
-   <script src="Plugins/js/{{script}}.js"></script> 
+
+
+<script>
+
+   {{#unless token}}
+
+   $.getScript("Plugins/js/{{script}}.js")
+{{/unless}}
+{{#if token}}
+    $.getScript("Plugins/js/{{script}}.js")
 {{/if}}
+   </script>

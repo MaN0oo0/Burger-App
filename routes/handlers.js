@@ -3,6 +3,7 @@ const router = express.Router();
 const orm = require("../config/orm");
 var store = require("store");
 const e = require("express");
+
 const requireAuth = (req, res, next) => {
   if (store.get("token")) {
     next(); // User is authenticated, continue to next middleware
@@ -19,19 +20,42 @@ const requireAuth = (req, res, next) => {
 };
 router.get("/", requireAuth, (req, res) => {
   orm.ormBurger.selectAll("resturent", (err, burgers) => {
-    if (err) {
-      console.error(err);
-    } else {
-      res.render("index", {
-        title: "Home",
-        script: "main",
-        burgers,
-        active: "active",
-        home: "true",
-        token: store.get("token"),
-        username: store.get("name"),
-      });
-    }
+    orm.ormBurger.getAllFavIds("1", Number(store.get("id")), (err, count) => {
+      if (err) {
+        console.error(err);
+      } else {
+        const ids = count.map((e) => e.BurgerID);
+        let newArray = [];
+        burgers.forEach((burger) => {
+          if (ids.includes(burger.id)) {
+            newArray.push({
+              id: burger.id,
+              birger_name: burger.birger_name,
+              Price: burger.Price,
+              isFav: true,
+            });
+          } else {
+            newArray.push({
+              id: burger.id,
+              birger_name: burger.birger_name,
+              Price: burger.Price,
+              isFav: false,
+            });
+          }
+        });
+
+        res.render("index", {
+          title: "Home",
+          script: "main",
+          burgers: newArray,
+          active: "active",
+          home: "true",
+          token: store.get("token"),
+          username: store.get("name"),
+          favCount: count.length,
+        });
+      }
+    });
   });
 });
 
@@ -45,19 +69,20 @@ router.get("/testredux", (req, res) => {
 });
 router.get("/account", (req, res) => {
   var query = req.query.action;
-  if (query === "login") {
-    res.render("account", {
-      title: "Login",
-      script: "login",
-      active: "active",
-      login: "true",
-    });
-  } else if (query === "register") {
+
+  if (query === "register") {
     res.render("account", {
       title: "Register",
       script: "register",
       active: "active",
       register: "true",
+    });
+  } else {
+    res.render("account", {
+      title: "Login",
+      script: "login",
+      active: "active",
+      login: "true",
     });
   }
 });
@@ -78,8 +103,6 @@ router.get("/favorites", (req, res) => {
     if (err) {
       console.error(err);
     } else {
-      console.log('ssss',results);
-      
       res.render("favorites", {
         title: "Favorites",
         favList: results,
@@ -114,7 +137,7 @@ router.post("/add", requireAuth, (req, res) => {
         });
       } else {
         res.status(200);
-        console.log(burger);
+
         res.json({
           message: "Burger added successfully",
           burger: {
@@ -131,7 +154,7 @@ router.post("/add", requireAuth, (req, res) => {
 
 router.delete("/delete", requireAuth, (req, res) => {
   const id = req.body.id;
-  orm.ormBurger.deleteOne(id, (err, results) => {
+  orm.ormBurger.deleteOne(id, store.get("id"), (err, results) => {
     if (err) {
       console.error(err);
       res.status(401);
@@ -140,7 +163,7 @@ router.delete("/delete", requireAuth, (req, res) => {
       });
     } else {
       res.status(200);
-      console.log(results);
+
       res.json({
         message: "Burger deleted successfully",
       });
@@ -160,7 +183,7 @@ router.put("/UpdateFav", requireAuth, (req, res) => {
         });
       } else {
         res.status(200);
-        console.log(results);
+
         res.json({
           message: "Burger updated successfully",
         });
@@ -173,10 +196,11 @@ router.get(`/search`, requireAuth, (req, res) => {
   if (search) {
     orm.ormBurger.getAllBy(search, (err, results) => {
       if (err) {
-        console.error(err);
         res.render("search", {
           title: "Search Page",
-          SearchTerm: search,
+          token: store.get("token"),
+          username: store.get("name"),
+          error: err,
         });
       } else {
         res.render("search", {
@@ -200,24 +224,39 @@ router.get(`/search`, requireAuth, (req, res) => {
   }
 });
 
+router.get("/getFavCount", requireAuth, (req, res) => {
+  const burgerId = req.query.burgerId;
+  orm.ormBurger.getAllFavIds(
+    burgerId,
+    Number(store.get("id")),
+    (err, count) => {
+      if (err) {
+        res.json({
+          message: "Error getting favorite count",
+        });
+      } else {
+        res.json({
+          count: count,
+        });
+      }
+    }
+  );
+});
+
 //#endregion
 //=================Auth Apis =====================\\
 router.post("/login", (req, res) => {
   orm.ormUser.auth(req.body, (err, results) => {
     if (err) {
-      console.log(err);
-
       res.status(401).json({ message: err.message });
     } else {
       var reslt = JSON.parse(results);
-      console.log(reslt);
-
       store.set("token", reslt.token);
       store.set("name", reslt.userName);
       store.set("id", reslt.id);
+
       res.json({
         message: "Login successful",
-        data: store.get("token"),
       });
     }
   });
@@ -226,7 +265,7 @@ router.post("/login", (req, res) => {
 router.post("/register", (req, res) => {
   orm.ormUser.register(req.body, (err, results) => {
     if (err) {
-      console.log(err);
+      res.status(401).json({ message: err.message });
     } else {
       res.json({
         message: "Register successful",
@@ -235,4 +274,7 @@ router.post("/register", (req, res) => {
   });
 });
 
+//#region secure files
+
+//#endregion
 module.exports = router;

@@ -10,13 +10,18 @@
 <div class="row col-md-12 m-auto d-flex justify-content-center renderBurgers">
 
     {{#if burgers}}
+    <div class="col-md-1">
+
+        <span class="badge bg-secondary">Favorit Count: <b class="favCount">
+                {{favCount}}</b></span>
+    </div>
     {{#each burgers}}
 
-    {{> burgerTemp . FavPage=false }}
+    {{> burgerTemp this FavPage=false }}
     {{/each}}
 
     {{else}}
-    <div class="col-md-12 text-center text-white-50">
+    <div class="col-md-12 text-center text-white-50 noData">
 
         No Data
     </div>

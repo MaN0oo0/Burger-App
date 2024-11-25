@@ -1,11 +1,19 @@
 <div class="row col-md-12 m-auto d-flex justify-content-center renderBurgers">
-    {{#if searchResults}}
 
-    {{#each searchResults}}
-    {{> burgerTemp . FavPage=false }}
-    {{/each}}
-    {{else}}
-    <p class="text-center fs-4 alert alert-secondary">No results found on " {{SearchTerm}} "</p>
+  {{#if error}}
+  <span
+    class="text-danger text-center fs-4 alert alert-secondary ">{{error.message}}</span>
+  {{/if}}
 
-    {{/if}}
+  {{#if searchResults}}
+
+  {{#each searchResults}}
+  {{> burgerTemp . FavPage=false }}
+  {{/each}}
+  {{else if SearchTerm}}
+
+  <p class="text-center fs-4 alert alert-secondary">No results found on
+    " {{SearchTerm}} "</p>
+
+  {{/if}}
 </div>

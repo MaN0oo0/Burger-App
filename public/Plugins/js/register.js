@@ -52,11 +52,10 @@ OnSubmit = function (e) {
       console.log("Goood", _user);
       $.post("/register", _user)
         .then((res) => {
-          console.log(res.data);
           location.href = "/account?action=login";
         })
         .catch((error) => {
-          console.log(error.message);
+          $("#response_request").html(error.responseJSON.message);
         });
     } else {
       _user["email"] = newErrorr.txtemail;

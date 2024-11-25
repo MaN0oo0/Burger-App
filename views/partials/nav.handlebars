@@ -43,6 +43,7 @@
                     <a class="nav-link disabled">Disabled</a>
                 </li> --}}
             </ul>
+               {{#if token}}
             <form action="/search" onsubmit="getBurger(this)" class="d-flex">
                 <input class="form-control me-2" type="text"
                     name="searchTerm"
@@ -50,6 +51,7 @@
                 <button class="btn btn-outline-success"
                     type="submit">Search</button>
             </form>
+            {{/if}}
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
                 {{#if token}}

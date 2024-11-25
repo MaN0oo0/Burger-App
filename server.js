@@ -8,30 +8,41 @@ const fileURLToPath = require("url");
 const PORT = process.env.PORT || 9001;
 const app = express();
 const session = require("express-session");
+const hbs = exphbs.create({
+  defaultLayout: "main",
+  layoutsDir: path.join(__dirname, "views/layouts"),
+  partialsDir: path.join(__dirname, "views/partials"),
+  // helpers: require("./config/handlebars-helpers"), //only need this
+  helpers: {
+    // eq: function (a, b) {
+    //   console.log("a",a);
+    //   console.log("b",b);
+      
+    //   if (a === b) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    //   // return value + 7;
+    // },
+    favList: function (val, val2, option) {
+      // console.log("ssss", val);
 
+      return val.includes(val2)
+        ? options.fn(`<span class="badge bg-secondary p-2 PricArea">fav</span>`)
+        : options.fn("");
+    },
+  },
+});
 // const __filename = fileURLToPath();
 // const __dirname = path.dirname(__filename);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
 app.use(bodyParser.json());
-app.use(
-  session({
-    secret: "my-secret-key",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true },
-  })
-);
+
 app.use(methodOverride("_method"));
 
-app.engine(
-  "handlebars",
-  exphbs.engine({
-    defaultLayout: "main",
-    layoutsDir: path.join(__dirname, "views/layouts"),
-    partialsDir: path.join(__dirname, "views/partials"),
-  })
-);
+app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 
 app.use("/", routes);

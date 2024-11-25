@@ -44,7 +44,7 @@ OnSubmit = function (e) {
 
       $.post("/login", { email: _user.txtemail, password: _user.txtpassword })
         .then((res) => {
-          location.href = '/';
+          window.location.href = `/`;
         })
         .catch((error) => {
           $("#response_request").html(error.responseJSON.message);
